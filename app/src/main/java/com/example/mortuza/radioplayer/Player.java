@@ -3,8 +3,6 @@ package com.example.mortuza.radioplayer;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.animation.Animation;
@@ -12,24 +10,16 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.chibde.visualizer.BarVisualizer;
-import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.ExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
@@ -53,17 +43,19 @@ public class Player extends AppCompatActivity {
     private DefaultBandwidthMeter defaultBandwidthMeter;
     private DataSource.Factory dataSourceFactory;
     private MediaSource mediaSource;
-    boolean flag = true;
 
-    public Player() {
-    }
+    boolean flag = true;
+    int Duration = 100;
+    RotateAnimation rotateAnimation;
+    CircleImageView circleImageView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
-        CircleImageView circleImageView = findViewById(R.id.image);
+        circleImageView = findViewById(R.id.image);
         Button playBtn = findViewById(R.id.btnPlay);
         TextView name = findViewById(R.id.name);
 
@@ -81,14 +73,12 @@ public class Player extends AppCompatActivity {
                 .into(circleImageView);
 
         // Adding animation to the circular image view
-        RotateAnimation rotateAnimation = new RotateAnimation(0, 360f,
+        rotateAnimation = new RotateAnimation(0, 360f,
                 Animation.RELATIVE_TO_SELF, 0.5f,
                 Animation.RELATIVE_TO_SELF, 0.5f);
 
         rotateAnimation.setInterpolator(new LinearInterpolator());
-        rotateAnimation.setDuration(1500);
         rotateAnimation.setRepeatCount(Animation.INFINITE);
-        circleImageView.startAnimation(rotateAnimation);
 
         bandwidthMeter = new DefaultBandwidthMeter();
         extractorsFactory = new DefaultExtractorsFactory();
@@ -124,10 +114,16 @@ public class Player extends AppCompatActivity {
 
     private void stopPlayer() {
         player.setPlayWhenReady(false);
+        Duration = 10;
+        rotateAnimation.setDuration(Duration);
+        circleImageView.startAnimation(rotateAnimation);
     }
 
     private void startPlayer() {
+        Duration = 1000;
         player.setPlayWhenReady(true);
+        rotateAnimation.setDuration(Duration);
+        circleImageView.startAnimation(rotateAnimation);
     }
 
     @Override
