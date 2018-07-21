@@ -77,12 +77,6 @@ public class Player extends AppCompatActivity {
         progressBar.setVisibility(View.INVISIBLE);
         progressBar.setIndeterminate(true);
 
-        if (player != null){
-            player.stop();
-            player.release();
-        }
-
-        // TODO: Play The Audio
 
         // Initialize music player
         initializeMediaPlayer();
@@ -152,4 +146,11 @@ public class Player extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        player.stop();
+        player.release();
+        finish();
+        super.onPause();
+    }
 }
