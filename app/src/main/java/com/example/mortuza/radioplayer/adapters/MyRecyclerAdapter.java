@@ -18,6 +18,8 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
 
     Context context;
     List<DataModel> myDataModels;
+    ItemClickListener itemClickListener;
+
 
     public MyRecyclerAdapter(Context context, List<DataModel> myDataModel) {
         this.context = context;
@@ -59,7 +61,18 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.My
 
         @Override
         public void onClick(View view) {
-
+            if (itemClickListener != null){
+                itemClickListener.onItemClick(view,getAdapterPosition());
+            }
         }
     }
+
+    public void setItemClickListener(ItemClickListener itemClickListener){
+        this.itemClickListener = itemClickListener;
+    }
+
+    public interface ItemClickListener{
+        void onItemClick(View v, int position);
+    }
+
 }

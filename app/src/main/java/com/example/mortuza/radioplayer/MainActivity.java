@@ -8,6 +8,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -50,12 +52,20 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         swipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
-                // TODO: Load Data
                 parseJsonData();
             }
         });
 
-        // TODO: Onclick Activation And Send Data Using Intent to Another Activity
+
+        myRecyclerAdapter.setItemClickListener(new MyRecyclerAdapter.ItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                String name = myDataModels.get(position).getName();
+                String imageUrl = myDataModels.get(position).getImage();
+                String streamUrl = myDataModels.get(position).getStreamUrl();
+                // TODO: Pass Data To Another Activity To Play
+            }
+        });
 
     }
 
@@ -88,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("data", "Error In Parsing.");
+                parseJsonData();
             }
         });
 
