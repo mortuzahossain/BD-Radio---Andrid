@@ -48,7 +48,7 @@ public class Player extends AppCompatActivity {
     int Duration = 100;
     RotateAnimation rotateAnimation;
     CircleImageView circleImageView;
-
+    Button playBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class Player extends AppCompatActivity {
         setContentView(R.layout.activity_player);
 
         circleImageView = findViewById(R.id.image);
-        Button playBtn = findViewById(R.id.btnPlay);
+        playBtn = findViewById(R.id.btnPlay);
         TextView name = findViewById(R.id.name);
 
         // Receiving Data From Intent
@@ -113,6 +113,7 @@ public class Player extends AppCompatActivity {
     }
 
     private void stopPlayer() {
+        playBtn.setBackgroundResource(R.drawable.play);
         player.setPlayWhenReady(false);
         Duration = 10;
         rotateAnimation.setDuration(Duration);
@@ -120,6 +121,7 @@ public class Player extends AppCompatActivity {
     }
 
     private void startPlayer() {
+        playBtn.setBackgroundResource(R.drawable.stop);
         Duration = 1000;
         player.setPlayWhenReady(true);
         rotateAnimation.setDuration(Duration);
