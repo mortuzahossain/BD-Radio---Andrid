@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         swipeRefreshLayout = findViewById(R.id.srl);
 
         //recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         myRecyclerAdapter = new MyRecyclerAdapter(this, myDataModels);
         recyclerView.setAdapter(myRecyclerAdapter);
 
@@ -63,7 +63,12 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 String name = myDataModels.get(position).getName();
                 String imageUrl = myDataModels.get(position).getImage();
                 String streamUrl = myDataModels.get(position).getStreamUrl();
-                // TODO: Pass Data To Another Activity To Play
+                // Sending Data For Play
+                startActivity(new Intent(getApplicationContext(), Player.class)
+                        .putExtra("NAME", name)
+                        .putExtra("IMAGE", imageUrl)
+                        .putExtra("STREAMURL", streamUrl)
+                );
             }
         });
 
