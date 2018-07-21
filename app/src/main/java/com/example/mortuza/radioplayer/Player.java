@@ -26,7 +26,7 @@ public class Player extends AppCompatActivity {
     CircleImageView circleImageView;
     TextView name;
     ProgressBar progressBar;
-    BarVisualizer barVisualizer;
+    static BarVisualizer barVisualizer;
 
     String streamUrlVal;
 
@@ -68,9 +68,7 @@ public class Player extends AppCompatActivity {
         rotateAnimation.setRepeatCount(Animation.INFINITE);
         circleImageView.startAnimation(rotateAnimation);
 
-        // Change The Button Visualizer
-        barVisualizer.setColor(ContextCompat.getColor(this, R.color.colorAccent));
-        barVisualizer.setDensity(30);
+
 
         // Change The Progress Bar
         progressBar.setMax(100);
@@ -101,6 +99,10 @@ public class Player extends AppCompatActivity {
     }
 
     private void initializeMediaPlayer() {
+        // Change The Button Visualizer
+        barVisualizer.setColor(ContextCompat.getColor(this, R.color.colorAccent));
+        barVisualizer.setDensity(30);
+
         player = new MediaPlayer();
         try {
             player.setDataSource(streamUrlVal);
