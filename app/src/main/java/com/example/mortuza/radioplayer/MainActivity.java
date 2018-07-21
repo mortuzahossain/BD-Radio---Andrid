@@ -1,8 +1,10 @@
 package com.example.mortuza.radioplayer;
 
+import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -38,24 +40,32 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         recyclerView = findViewById(R.id.mainRecyclerView);
         swipeRefreshLayout = findViewById(R.id.srl);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
         myRecyclerAdapter = new MyRecyclerAdapter(this, myDataModels);
         recyclerView.setAdapter(myRecyclerAdapter);
+
 
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
                 // TODO: Load Data
+                parseJsonData();
             }
         });
 
         // TODO: Onclick Activation And Send Data Using Intent to Another Activity
 
-        //parseJsonData();
     }
 
+
     private void parseJsonData() {
+
+        swipeRefreshLayout.setRefreshing(true);
+        myDataModels.clear();
+        myRecyclerAdapter.notifyDataSetChanged();
+
         String url = "https://script.googleusercontent.com/macros/echo?user_content_key=nA_hR3hsJTyPa6ZRG3ffKqxX-pjyOg_bjEYOYA2qDTj38bhpFppGUHU_XVnCml67qE2EwovH0BwdW751dCtECm0XKHCm025zOJmA1Yb3SEsKFZqtv3DaNYcMrmhZHmUMWojr9NvTBuBLhyHCd5hHa5V7SzAZj2xBfFDRtNxpfsmuqfjnOYLBpWrI3G8IWJh29l4LSossvEa_fiNHZ0znxEBErwHi9mmicUM0HMtnaiwUei0F3ImvuoJxMJwepHIEVubryYo1CKzm1pljnAdCSEpIEmuIt9ZewqJbeTowOR_fVIgxkfofiQ&lib=M7OO09pfGNQD9igEAo4bouJoiE_6Oxspk";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -66,7 +76,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     Log.d("data", "" + jsonArray);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        myDataModels.add(new DataModel(jsonObject.getString("Name"), jsonObject.getString("Image"), jsonObject.getString("StremUrl")));
                         Log.d("data", "" + jsonObject.getString("Name"));
+                        myRecyclerAdapter.notifyDataSetChanged();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -80,10 +92,11 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         });
 
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onRefresh() {
-        // TODO: Code to refress to get new data from internet.
+        parseJsonData();
     }
 }
