@@ -1,7 +1,11 @@
 package com.example.mortuza.radioplayer;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -50,14 +54,17 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         myRecyclerAdapter = new MyRecyclerAdapter(this, myDataModels);
         recyclerView.setAdapter(myRecyclerAdapter);
 
-
-        swipeRefreshLayout.setOnRefreshListener(this);
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                parseJsonData();
-            }
-        });
+        if (isOnline()) {
+            swipeRefreshLayout.setOnRefreshListener(this);
+            swipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    parseJsonData();
+                }
+            });
+        } else {
+            mybuilder("Warning","Please connect with internet first.","Open wi-fi");
+        }
 
 
         myRecyclerAdapter.setItemClickListener(new MyRecyclerAdapter.ItemClickListener() {
@@ -117,5 +124,33 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     @Override
     public void onRefresh() {
         parseJsonData();
+    }
+
+    private boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void mybuilder(String title, String message, String positive) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton(positive, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
+                /*Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.setClassName("com.android.phone","com.android.phone.NetworkSetting");
+                startActivity(intent);*/
+            }
+        });
+        builder.setNegativeButton("No", null);
+        AlertDialog alert_about = builder.create();
+        alert_about.show();
     }
 }
